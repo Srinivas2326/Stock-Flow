@@ -19,7 +19,7 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  "https://stock-flow-sand.vercel.app", // ✅ Vercel frontend
+  "https://stock-flow-self.vercel.app", // ✅ Vercel frontend
 ];
 
 // CORS configuration
