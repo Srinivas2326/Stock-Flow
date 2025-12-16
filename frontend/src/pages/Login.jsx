@@ -1,12 +1,13 @@
 import { useState, useContext } from "react";
-import api from "../services/api";
-import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { loginUser } from "../services/authService";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -15,16 +16,27 @@ const Login = () => {
     e.preventDefault();
     setError("");
 
-    try {
-      const { data } = await api.post("/auth/login", {
-        email,
-        password,
-      });
+    if (!email || !password) {
+      setError("All fields are required");
+      return;
+    }
 
+    try {
+      setLoading(true);
+
+      const data = await loginUser({ email, password });
+
+      // Save JWT token
       login(data.token);
+
+      // Redirect to dashboard
       navigate("/dashboard");
     } catch (err) {
-      setError("Invalid email or password");
+      setError(
+        err.response?.data?.message || "Invalid email or password"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,7 +60,9 @@ const Login = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button type="submit">Login</button>
+      <button type="submit" disabled={loading}>
+        {loading ? "Logging in..." : "Login"}
+      </button>
 
       <p>
         New user? <Link to="/register">Register here</Link>

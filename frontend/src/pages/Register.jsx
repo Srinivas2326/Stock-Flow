@@ -1,6 +1,6 @@
 import { useState } from "react";
-import api from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
+import { registerUser } from "../services/authService";
 
 const Register = () => {
   const [orgName, setOrgName] = useState("");
@@ -29,15 +29,18 @@ const Register = () => {
     try {
       setLoading(true);
 
-      await api.post("/auth/register", {
+      await registerUser({
         orgName,
         email,
         password,
       });
 
+      // Redirect to login after successful registration
       navigate("/");
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+      setError(
+        err.response?.data?.message || "Registration failed"
+      );
     } finally {
       setLoading(false);
     }
