@@ -1,85 +1,132 @@
-
+/* =====================
+   GLOBAL RESET
+===================== */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --danger: #dc2626;
+  --danger-dark: #b91c1c;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+}
+
 body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: #f4f6f8;
-  color: #333;
-  line-height: 1.5;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
 }
 
-   /* NAVBAR */
-nav {
+/* =====================
+   NAVBAR
+===================== */
+.navbar {
   background: #1e293b;
-  padding: 14px 20px;
-  margin-bottom: 25px;
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-nav a {
+.nav-left a {
   color: #ffffff;
   text-decoration: none;
-  margin-right: 15px;
+  margin-right: 18px;
   font-weight: 500;
+  font-size: 15px;
 }
 
-nav a:hover {
+.nav-left a:hover {
   text-decoration: underline;
 }
 
-nav button {
+.logout-btn {
   background: none;
   border: none;
   color: #ffffff;
   cursor: pointer;
   font-size: 15px;
+  font-weight: 500;
 }
 
-nav button:hover {
+.logout-btn:hover {
   text-decoration: underline;
 }
 
-   /* FORM CONTAINERS (Login/Register) */
+/* =====================
+   PAGE WRAPPER
+===================== */
+.page-container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 0 20px 50px;
+}
+
+/* =====================
+   HEADINGS
+===================== */
+h2 {
+  font-size: 24px;
+  margin-bottom: 18px;
+}
+
+h3 {
+  font-size: 18px;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  color: var(--muted);
+}
+
+/* =====================
+   AUTH FORMS
+===================== */
 form {
-  background: #ffffff;
-  padding: 25px;
+  background: var(--card);
+  padding: 28px;
   width: 100%;
-  max-width: 360px;
-  margin: 60px auto;
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  max-width: 380px;
+  margin: 70px auto;
+  border-radius: 10px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
 }
 
 form h2 {
   text-align: center;
-  margin-bottom: 20px;
-  color: #1e293b;
+  margin-bottom: 22px;
 }
 
-   /* INPUTS & BUTTONS */
+/* =====================
+   INPUTS & BUTTONS
+===================== */
 input {
   width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 12px;
-  border-radius: 5px;
-  border: 1px solid #cbd5e1;
+  padding: 11px 14px;
+  margin-bottom: 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
   font-size: 14px;
 }
 
 input:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: var(--primary);
 }
 
 button {
   width: 100%;
-  padding: 10px;
-  border-radius: 6px;
+  padding: 11px;
+  border-radius: 7px;
   border: none;
-  background: #2563eb;
+  background: var(--primary);
   color: #ffffff;
   font-size: 15px;
   cursor: pointer;
@@ -87,7 +134,7 @@ button {
 }
 
 button:hover {
-  background: #1d4ed8;
+  background: var(--primary-dark);
 }
 
 button:disabled {
@@ -95,37 +142,65 @@ button:disabled {
   cursor: not-allowed;
 }
 
-   /* PAGE CONTAINERS */
-.page-container {
-  max-width: 900px;
-  margin: auto;
-  padding: 0 20px 40px;
+/* =====================
+   DASHBOARD CARDS
+===================== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 25px;
 }
 
-
-h2 {
-  margin-bottom: 15px;
-}
-
-h3 {
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-
-   /* DASHBOARD */
 .dashboard-card {
-  background: #ffffff;
+  background: var(--card);
   padding: 18px;
-  border-radius: 8px;
-  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.dashboard-card h4 {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.dashboard-card p {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* =====================
+   LOW STOCK LIST
+===================== */
+.low-stock-item {
+  background: #fff7ed;
+  border-left: 4px solid #f97316;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+/* =====================
+   PRODUCTS
+===================== */
+.product-form {
+  background: var(--card);
+  padding: 18px;
+  border-radius: 10px;
+  margin-bottom: 20px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 }
 
-   /* PRODUCTS */
+.product-list {
+  margin-top: 15px;
+}
+
 .product-item {
-  background: #ffffff;
-  padding: 12px 15px;
-  border-radius: 6px;
+  background: var(--card);
+  padding: 14px 16px;
+  border-radius: 8px;
   margin-bottom: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   display: flex;
@@ -133,27 +208,50 @@ h3 {
   align-items: center;
 }
 
+.product-item strong {
+  font-size: 15px;
+}
+
+.product-item span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .product-item button {
   width: auto;
-  padding: 6px 10px;
-  background: #dc2626;
+  padding: 6px 12px;
+  background: var(--danger);
   font-size: 13px;
 }
 
 .product-item button:hover {
-  background: #b91c1c;
+  background: var(--danger-dark);
 }
 
-   /* TEXT HELPERS */
+/* =====================
+   SETTINGS
+===================== */
+.settings-card {
+  background: var(--card);
+  padding: 22px;
+  border-radius: 10px;
+  max-width: 500px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* =====================
+   TEXT HELPERS
+===================== */
 .error-text {
-  color: #dc2626;
-  margin-bottom: 10px;
+  color: var(--danger);
+  margin-bottom: 12px;
   text-align: center;
+  font-size: 14px;
 }
 
 .success-text {
   color: #16a34a;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   text-align: center;
 }
 
@@ -161,24 +259,25 @@ h3 {
   text-align: center;
 }
 
-
 a {
-  color: #2563eb;
+  color: var(--primary);
 }
 
 a:hover {
   text-decoration: underline;
 }
 
-   /* RESPONSIVE */
+/* =====================
+   RESPONSIVE
+===================== */
 @media (max-width: 600px) {
-  nav {
-    text-align: center;
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
   }
 
-  nav a {
-    display: inline-block;
-    margin: 5px 8px;
+  .dashboard-grid {
+    grid-template-columns: 1fr;
   }
 
   .product-item {
