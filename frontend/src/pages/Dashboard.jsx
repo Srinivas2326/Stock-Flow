@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import api from "../services/api";
 import { AuthContext } from "../context/AuthContext";
-import Navbar from "../components/Navbar";
 
 const Dashboard = () => {
   const { token } = useContext(AuthContext);
@@ -22,7 +21,6 @@ const Dashboard = () => {
             Authorization: `Bearer ${token}`
           }
         });
-
         setData(res.data);
       } catch (err) {
         setError("Failed to load dashboard data");
@@ -31,45 +29,61 @@ const Dashboard = () => {
       }
     };
 
-    if (token) {
-      fetchDashboard();
-    }
+    if (token) fetchDashboard();
   }, [token]);
+
+  if (loading) {
+    return <p>Loading dashboard...</p>;
+  }
+
+  if (error) {
+    return <p className="error-text">{error}</p>;
+  }
 
   return (
     <>
-      <Navbar />
+      {/* PAGE HEADER */}
+      <div className="page-header">
+        <h1>Dashboard</h1>
+        <p className="page-subtitle">Overview of your inventory</p>
+      </div>
 
-      <div className="container">
-        <h2>Dashboard</h2>
+      {/* STATS CARDS */}
+      <div className="dashboard-cards">
+        <div className="dashboard-card">
+          <p className="card-title">Total Products</p>
+          <h2>{data.totalProducts}</h2>
+        </div>
 
-        {loading && <p>Loading dashboard...</p>}
+        <div className="dashboard-card">
+          <p className="card-title">Total Inventory</p>
+          <h2>{data.totalQuantity}</h2>
+        </div>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        <div className="dashboard-card">
+          <p className="card-title">Low Stock Items</p>
+          <h2>{data.lowStock.length}</h2>
+        </div>
+      </div>
 
-        {!loading && !error && (
+      {/* LOW STOCK PANEL */}
+      <div className="dashboard-panel">
+        {data.lowStock.length === 0 ? (
+          <div className="stock-good">
+            <div className="icon-circle success">✓</div>
+            <h3>All Stock Levels Good</h3>
+            <p>No products are currently low on stock</p>
+          </div>
+        ) : (
           <>
-            <p>
-              <strong>Total Products:</strong> {data.totalProducts}
-            </p>
-
-            <p>
-              <strong>Total Quantity:</strong> {data.totalQuantity}
-            </p>
-
             <h3>Low Stock Items</h3>
-
-            {data.lowStock.length === 0 ? (
-              <p>No low stock items 🎉</p>
-            ) : (
-              <ul>
-                {data.lowStock.map((item) => (
-                  <li key={item._id}>
-                    {item.name} – Qty: {item.quantity}
-                  </li>
-                ))}
-              </ul>
-            )}
+            <ul className="low-stock-list">
+              {data.lowStock.map(item => (
+                <li key={item._id}>
+                  <strong>{item.name}</strong> — Qty: {item.quantity}
+                </li>
+              ))}
+            </ul>
           </>
         )}
       </div>

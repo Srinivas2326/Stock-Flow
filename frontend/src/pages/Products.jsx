@@ -1,114 +1,72 @@
 import { useEffect, useState, useContext } from "react";
 import api from "../services/api";
 import { AuthContext } from "../context/AuthContext";
+import AddProductModal from "../components/AddProductModal";
+import EditProductModal from "../components/EditProductModal";
 
 const Products = () => {
   const { token } = useContext(AuthContext);
-
   const [products, setProducts] = useState([]);
-  const [name, setName] = useState("");
-  const [sku, setSku] = useState("");
-  const [quantity, setQuantity] = useState(0);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [showAdd, setShowAdd] = useState(false);
+  const [editProduct, setEditProduct] = useState(null);
 
-  const headers = {
-    Authorization: `Bearer ${token}`
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const loadProducts = async () => {
+    const res = await api.get("/products", { headers });
+    setProducts(res.data);
   };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await api.get("/products", { headers });
-        setProducts(res.data);
-      } catch (err) {
-        setError("Failed to load products");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (token) fetchProducts();
-  }, [token]);
-
-  const addProduct = async () => {
-    if (!name || !sku) {
-      setError("Name and SKU are required");
-      return;
-    }
-
-    try {
-      const res = await api.post(
-        "/products",
-        { name, sku, quantity },
-        { headers }
-      );
-      setProducts([...products, res.data]);
-      setName("");
-      setSku("");
-      setQuantity(0);
-      setError("");
-    } catch (err) {
-      setError("Failed to add product (SKU may already exist)");
-    }
-  };
-
-  const deleteProduct = async (id) => {
-    try {
-      await api.delete(`/products/${id}`, { headers });
-      setProducts(products.filter(p => p._id !== id));
-    } catch (err) {
-      setError("Failed to delete product");
-    }
-  };
-
-  if (loading) return <p>Loading products...</p>;
+    loadProducts();
+  }, []);
 
   return (
-    <div>
-      <h2>Products</h2>
+    <>
+      <div className="page-header">
+        <div>
+          <h1>Products</h1>
+          <p>Manage your inventory</p>
+        </div>
+        <button onClick={() => setShowAdd(true)}>+ Add Product</button>
+      </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>SKU</th>
+            <th>Qty</th>
+            <th>Cost</th>
+            <th>Price</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map(p => (
+            <tr key={p._id}>
+              <td>{p.name}</td>
+              <td>{p.sku}</td>
+              <td>{p.quantity}</td>
+              <td>${p.costPrice}</td>
+              <td>${p.sellingPrice}</td>
+              <td>
+                <button onClick={() => setEditProduct(p)}>✏️</button>
+                <button
+                  onClick={async () => {
+                    await api.delete(`/products/${p._id}`, { headers });
+                    loadProducts();
+                  }}
+                >🗑️</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      <input
-        placeholder="Product Name"
-        value={name}
-        onChange={e => setName(e.target.value)}
-      />
-
-      <input
-        placeholder="SKU"
-        value={sku}
-        onChange={e => setSku(e.target.value)}
-      />
-
-      <input
-        type="number"
-        placeholder="Quantity"
-        value={quantity}
-        onChange={e => setQuantity(Number(e.target.value))}
-      />
-
-      <button onClick={addProduct}>Add Product</button>
-
-      <hr />
-
-      {products.length === 0 ? (
-        <p>No products yet</p>
-      ) : (
-        products.map(p => (
-          <div key={p._id} style={{ marginBottom: "8px" }}>
-            <strong>{p.name}</strong> ({p.sku}) – Qty: {p.quantity}
-            <button
-              style={{ marginLeft: "10px" }}
-              onClick={() => deleteProduct(p._id)}
-            >
-              Delete
-            </button>
-          </div>
-        ))
-      )}
-    </div>
+      {showAdd && <AddProductModal close={() => { setShowAdd(false); loadProducts(); }} />}
+      {editProduct && <EditProductModal product={editProduct} close={() => { setEditProduct(null); loadProducts(); }} />}
+    </>
   );
 };
 
