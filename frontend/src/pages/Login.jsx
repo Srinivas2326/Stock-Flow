@@ -7,6 +7,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -15,17 +16,15 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await api.post("/api/auth/login", {
+      const { data } = await api.post("/auth/login", {
         email,
         password,
       });
 
-      login(res.data.token);
+      login(data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Invalid email or password"
-      );
+      setError("Invalid email or password");
     }
   };
 
@@ -40,7 +39,6 @@ const Login = () => {
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        required
       />
 
       <input
@@ -48,12 +46,11 @@ const Login = () => {
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        required
       />
 
       <button type="submit">Login</button>
 
-      <p style={{ marginTop: "10px", textAlign: "center" }}>
+      <p>
         New user? <Link to="/register">Register here</Link>
       </p>
     </form>

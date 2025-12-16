@@ -21,11 +21,6 @@ const Register = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
-      return;
-    }
-
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
@@ -34,7 +29,7 @@ const Register = () => {
     try {
       setLoading(true);
 
-      await api.post("/api/auth/register", {
+      await api.post("/auth/register", {
         orgName,
         email,
         password,
@@ -42,10 +37,7 @@ const Register = () => {
 
       navigate("/");
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Registration failed. Please try again."
-      );
+      setError(err.response?.data?.message || "Registration failed");
     } finally {
       setLoading(false);
     }
@@ -58,11 +50,9 @@ const Register = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <input
-        type="text"
         placeholder="Organization Name"
         value={orgName}
         onChange={(e) => setOrgName(e.target.value)}
-        required
       />
 
       <input
@@ -70,7 +60,6 @@ const Register = () => {
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        required
       />
 
       <input
@@ -78,7 +67,6 @@ const Register = () => {
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        required
       />
 
       <input
@@ -86,14 +74,13 @@ const Register = () => {
         placeholder="Confirm Password"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
-        required
       />
 
       <button type="submit" disabled={loading}>
         {loading ? "Registering..." : "Register"}
       </button>
 
-      <p style={{ marginTop: "10px", textAlign: "center" }}>
+      <p>
         Already have an account? <Link to="/">Login</Link>
       </p>
     </form>
