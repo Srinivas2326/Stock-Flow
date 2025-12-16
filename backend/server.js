@@ -6,31 +6,29 @@ const connectDB = require("./config/db");
 // Load environment variables
 dotenv.config();
 
+// Connect DB
+connectDB();
+
 const app = express();
 
 /* ==============================
-   DATABASE
+   CORS CONFIG (FIXED)
 ================================ */
-connectDB();
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://stock-flow-sand.vercel.app"
+];
 
-/* ==============================
-   MIDDLEWARES
-================================ */
-
-// CORS (FIXED for Vercel + Render)
 app.use(
   cors({
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        "http://localhost:5173",
-        process.env.CLIENT_URL, // https://stock-flow-sand.vercel.app
-      ];
+    origin: function (origin, callback) {
+      // allow requests with no origin (Postman, mobile apps)
+      if (!origin) return callback(null, true);
 
-      // allow requests with no origin (Postman, curl)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
       } else {
-        callback(new Error("CORS not allowed"));
+        return callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
@@ -39,16 +37,17 @@ app.use(
   })
 );
 
-// IMPORTANT: handle preflight requests
+// IMPORTANT: handle preflight
 app.options("*", cors());
 
-// Body parser
+/* ==============================
+   BODY PARSER
+================================ */
 app.use(express.json());
 
 /* ==============================
    ROUTES
 ================================ */
-
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
@@ -57,7 +56,6 @@ app.use("/api/settings", require("./routes/settingsRoutes"));
 /* ==============================
    HEALTH CHECK
 ================================ */
-
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     status: "OK",
@@ -68,19 +66,17 @@ app.get("/api/health", (req, res) => {
 /* ==============================
    GLOBAL ERROR HANDLER
 ================================ */
-
 app.use((err, req, res, next) => {
   console.error("Error:", err.message);
   res.status(500).json({
     success: false,
-    message: err.message || "Server error",
+    message: err.message || "Server Error",
   });
 });
 
 /* ==============================
    START SERVER
 ================================ */
-
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
