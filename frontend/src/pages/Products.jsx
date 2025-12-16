@@ -37,19 +37,27 @@ const Products = () => {
             <th>Product</th>
             <th>SKU</th>
             <th>Qty</th>
-            <th>Cost</th>
-            <th>Price</th>
+            <th>Cost (₹)</th>
+            <th>Price (₹)</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {products.map(p => (
+          {products.length === 0 && (
+            <tr>
+              <td colSpan="6" style={{ textAlign: "center" }}>
+                No products found
+              </td>
+            </tr>
+          )}
+
+          {products.map((p) => (
             <tr key={p._id}>
               <td>{p.name}</td>
               <td>{p.sku}</td>
               <td>{p.quantity}</td>
-              <td>${p.costPrice}</td>
-              <td>${p.sellingPrice}</td>
+              <td>₹ {p.costPrice?.toFixed(2)}</td>
+              <td>₹ {p.sellingPrice?.toFixed(2)}</td>
               <td>
                 <button onClick={() => setEditProduct(p)}>✏️</button>
                 <button
@@ -57,15 +65,33 @@ const Products = () => {
                     await api.delete(`/products/${p._id}`, { headers });
                     loadProducts();
                   }}
-                >🗑️</button>
+                >
+                  🗑️
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {showAdd && <AddProductModal close={() => { setShowAdd(false); loadProducts(); }} />}
-      {editProduct && <EditProductModal product={editProduct} close={() => { setEditProduct(null); loadProducts(); }} />}
+      {showAdd && (
+        <AddProductModal
+          close={() => {
+            setShowAdd(false);
+            loadProducts();
+          }}
+        />
+      )}
+
+      {editProduct && (
+        <EditProductModal
+          product={editProduct}
+          close={() => {
+            setEditProduct(null);
+            loadProducts();
+          }}
+        />
+      )}
     </>
   );
 };

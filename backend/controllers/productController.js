@@ -4,28 +4,49 @@ const Product = require("../models/Product");
 // @route   POST /api/products
 exports.createProduct = async (req, res) => {
   try {
-    const { name, sku, quantity, costPrice, sellingPrice, lowStockThreshold } = req.body;
-
-    if (!name || !sku) {
-      return res.status(400).json({ message: "Name and SKU are required" });
-    }
-
-    const product = await Product.create({
+    const {
       name,
       sku,
       quantity,
       costPrice,
       sellingPrice,
-      lowStockThreshold,
-      organization: req.user.organization._id
+      lowStockThreshold
+    } = req.body;
+
+    // ✅ Strong validation (IMPORTANT)
+    if (
+      !name ||
+      !sku ||
+      costPrice === undefined ||
+      sellingPrice === undefined
+    ) {
+      return res.status(400).json({
+        message: "Name, SKU, Cost Price and Selling Price are required"
+      });
+    }
+
+    const product = await Product.create({
+      organization: req.user.organization._id,
+      name,
+      sku,
+      quantity: quantity ?? 0,
+      costPrice,
+      sellingPrice,
+      lowStockThreshold
     });
 
     res.status(201).json(product);
   } catch (error) {
     if (error.code === 11000) {
-      return res.status(400).json({ message: "SKU already exists" });
+      return res.status(400).json({
+        message: "SKU already exists for this organization"
+      });
     }
-    res.status(500).json({ message: "Failed to create product" });
+
+    res.status(500).json({
+      message: "Failed to create product",
+      error: error.message
+    });
   }
 };
 
@@ -39,7 +60,10 @@ exports.getProducts = async (req, res) => {
 
     res.json(products);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch products" });
+    res.status(500).json({
+      message: "Failed to fetch products",
+      error: error.message
+    });
   }
 };
 
@@ -62,7 +86,10 @@ exports.updateProduct = async (req, res) => {
 
     res.json(product);
   } catch (error) {
-    res.status(500).json({ message: "Failed to update product" });
+    res.status(500).json({
+      message: "Failed to update product",
+      error: error.message
+    });
   }
 };
 
@@ -81,6 +108,9 @@ exports.deleteProduct = async (req, res) => {
 
     res.json({ message: "Product deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete product" });
+    res.status(500).json({
+      message: "Failed to delete product",
+      error: error.message
+    });
   }
 };
