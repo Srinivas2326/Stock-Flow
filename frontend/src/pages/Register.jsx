@@ -16,7 +16,6 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
-    // Frontend validation
     if (!orgName || !email || !password || !confirmPassword) {
       setError("All fields are required");
       return;
@@ -35,22 +34,17 @@ const Register = () => {
     try {
       setLoading(true);
 
-      const { data } = await api.post("/api/auth/register", {
+      await api.post("/api/auth/register", {
         orgName,
         email,
         password,
       });
 
-      console.log("Register success:", data);
-
-      // Redirect to login page
       navigate("/");
     } catch (err) {
-      console.error("Register error:", err);
-
       setError(
         err.response?.data?.message ||
-        "Registration failed. Please try again."
+          "Registration failed. Please try again."
       );
     } finally {
       setLoading(false);
@@ -68,6 +62,7 @@ const Register = () => {
         placeholder="Organization Name"
         value={orgName}
         onChange={(e) => setOrgName(e.target.value)}
+        required
       />
 
       <input
@@ -75,6 +70,7 @@ const Register = () => {
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        required
       />
 
       <input
@@ -82,6 +78,7 @@ const Register = () => {
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        required
       />
 
       <input
@@ -89,6 +86,7 @@ const Register = () => {
         placeholder="Confirm Password"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
+        required
       />
 
       <button type="submit" disabled={loading}>

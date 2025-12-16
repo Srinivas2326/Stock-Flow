@@ -12,12 +12,20 @@ const Login = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    setError("");
+
     try {
-      const res = await api.post("/auth/login", { email, password });
+      const res = await api.post("/api/auth/login", {
+        email,
+        password,
+      });
+
       login(res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError("Invalid email or password");
+      setError(
+        err.response?.data?.message || "Invalid email or password"
+      );
     }
   };
 
@@ -28,6 +36,7 @@ const Login = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <input
+        type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
