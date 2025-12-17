@@ -13,10 +13,13 @@ const Products = () => {
   const [showAdd, setShowAdd] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
 
-  const headers = { Authorization: `Bearer ${token}` };
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
 
   const loadProducts = async () => {
     try {
+      setError("");
       setLoading(true);
       const res = await api.get("/products", { headers });
       setProducts(res.data);
@@ -29,7 +32,19 @@ const Products = () => {
 
   useEffect(() => {
     loadProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const deleteProduct = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
+
+    try {
+      await api.delete(`/products/${id}`, { headers });
+      loadProducts();
+    } catch (err) {
+      alert("Failed to delete product");
+    }
+  };
 
   return (
     <>
@@ -56,6 +71,7 @@ const Products = () => {
               <th>Actions</th>
             </tr>
           </thead>
+
           <tbody>
             {products.length === 0 && (
               <tr>
@@ -70,20 +86,24 @@ const Products = () => {
                 <td>{p.name}</td>
                 <td>{p.sku}</td>
                 <td>{p.quantity}</td>
-                <td>₹ {p.costPrice != null ? p.costPrice.toFixed(2) : "0.00"}</td>
+
                 <td>
-                  ₹ {p.sellingPrice != null ? p.sellingPrice.toFixed(2) : "0.00"}
+                  ₹{" "}
+                  {typeof p.costPrice === "number"
+                    ? p.costPrice.toFixed(2)
+                    : "0.00"}
                 </td>
+
+                <td>
+                  ₹{" "}
+                  {typeof p.sellingPrice === "number"
+                    ? p.sellingPrice.toFixed(2)
+                    : "0.00"}
+                </td>
+
                 <td>
                   <button onClick={() => setEditProduct(p)}>✏️</button>
-                  <button
-                    onClick={async () => {
-                      await api.delete(`/products/${p._id}`, { headers });
-                      loadProducts();
-                    }}
-                  >
-                    🗑️
-                  </button>
+                  <button onClick={() => deleteProduct(p._id)}>🗑️</button>
                 </td>
               </tr>
             ))}
