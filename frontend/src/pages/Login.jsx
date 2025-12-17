@@ -15,6 +15,7 @@ const Login = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
+    // 🔴 Validation
     if (!email || !password) {
       toast.error("Email and password are required");
       return;
@@ -23,6 +24,7 @@ const Login = () => {
     try {
       setLoading(true);
 
+      // 🔐 API call
       const data = await loginUser({ email, password });
 
       // ✅ Save JWT token
@@ -31,8 +33,11 @@ const Login = () => {
       // ✅ SUCCESS TOAST
       toast.success("Login successful");
 
-      // Redirect to dashboard
-      navigate("/dashboard");
+      // ⏳ IMPORTANT: Delay navigation so toast is visible
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 500);
+
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Invalid email or password"
@@ -51,6 +56,7 @@ const Login = () => {
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        autoComplete="email"
       />
 
       <input
@@ -58,6 +64,7 @@ const Login = () => {
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        autoComplete="current-password"
       />
 
       <button type="submit" disabled={loading}>
