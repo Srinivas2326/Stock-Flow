@@ -15,11 +15,12 @@ const AddProductModal = ({ close }) => {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const submit = async () => {
+  const submitHandler = async () => {
     setError("");
 
-    // ✅ Backend validation alignment
+    // ✅ Required field validation
     if (
       !form.name ||
       !form.sku ||
@@ -31,11 +32,13 @@ const AddProductModal = ({ close }) => {
     }
 
     try {
+      setLoading(true);
+
       await api.post(
         "/products",
         {
-          name: form.name,
-          sku: form.sku,
+          name: form.name.trim(),
+          sku: form.sku.trim().toUpperCase(),
           quantity: Number(form.quantity),
           costPrice: Number(form.costPrice),
           sellingPrice: Number(form.sellingPrice),
@@ -49,62 +52,109 @@ const AddProductModal = ({ close }) => {
       close();
     } catch (err) {
       setError(err.response?.data?.message || "Failed to add product");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="modal">
-      <h3>Add Product</h3>
+    <div className="modal-overlay">
+      <div className="modal-card">
+        <h3>Add Product</h3>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p className="error-text">{error}</p>}
 
-      <input
-        placeholder="Product Name"
-        value={form.name}
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
-      />
+        <div className="form-group">
+          <label>Product Name</label>
+          <input
+            placeholder="e.g. Rice"
+            value={form.name}
+            onChange={(e) =>
+              setForm({ ...form, name: e.target.value })
+            }
+          />
+        </div>
 
-      <input
-        placeholder="SKU"
-        value={form.sku}
-        onChange={(e) => setForm({ ...form, sku: e.target.value })}
-      />
+        <div className="form-group">
+          <label>SKU</label>
+          <input
+            placeholder="e.g. RICE001"
+            value={form.sku}
+            onChange={(e) =>
+              setForm({ ...form, sku: e.target.value })
+            }
+          />
+        </div>
 
-      <input
-        type="number"
-        placeholder="Quantity"
-        value={form.quantity}
-        onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-      />
+        <div className="form-row">
+          <div className="form-group">
+            <label>Quantity</label>
+            <input
+              type="number"
+              value={form.quantity}
+              onChange={(e) =>
+                setForm({ ...form, quantity: e.target.value })
+              }
+            />
+          </div>
 
-      <input
-        type="number"
-        placeholder="Cost Price (₹)"
-        value={form.costPrice}
-        onChange={(e) => setForm({ ...form, costPrice: e.target.value })}
-      />
+          <div className="form-group">
+            <label>Low Stock Alert</label>
+            <input
+              type="number"
+              value={form.lowStockThreshold}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  lowStockThreshold: e.target.value,
+                })
+              }
+            />
+          </div>
+        </div>
 
-      <input
-        type="number"
-        placeholder="Selling Price (₹)"
-        value={form.sellingPrice}
-        onChange={(e) =>
-          setForm({ ...form, sellingPrice: e.target.value })
-        }
-      />
+        <div className="form-row">
+          <div className="form-group">
+            <label>Cost Price (₹)</label>
+            <input
+              type="number"
+              placeholder="e.g. 1200"
+              value={form.costPrice}
+              onChange={(e) =>
+                setForm({ ...form, costPrice: e.target.value })
+              }
+            />
+          </div>
 
-      <input
-        type="number"
-        placeholder="Low Stock Threshold"
-        value={form.lowStockThreshold}
-        onChange={(e) =>
-          setForm({ ...form, lowStockThreshold: e.target.value })
-        }
-      />
+          <div className="form-group">
+            <label>Selling Price (₹)</label>
+            <input
+              type="number"
+              placeholder="e.g. 1350"
+              value={form.sellingPrice}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  sellingPrice: e.target.value,
+                })
+              }
+            />
+          </div>
+        </div>
 
-      <div style={{ marginTop: "12px" }}>
-        <button onClick={submit}>Add Product</button>
-        <button onClick={close}>Cancel</button>
+        <div className="modal-actions">
+          <button
+            className="btn-primary"
+            onClick={submitHandler}
+            disabled={loading}
+          >
+            {loading ? "Adding..." : "Add Product"}
+          </button>
+
+          <button className="btn-secondary" onClick={close}>
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );
