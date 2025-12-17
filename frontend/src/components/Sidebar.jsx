@@ -18,7 +18,7 @@ const Sidebar = () => {
 
       <nav>
         <NavLink to="/dashboard">Dashboard</NavLink>
-        <NavLink to="/products">Products</NavLink>
+        <NavLink to="/products">Inventory</NavLink>
         <NavLink to="/settings">Settings</NavLink>
       </nav>
 
