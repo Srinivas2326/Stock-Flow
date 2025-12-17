@@ -14,9 +14,7 @@ const Settings = () => {
     Authorization: `Bearer ${token}`
   };
 
-  // =========================
-  // Fetch current settings
-  // =========================
+
   useEffect(() => {
     const fetchSettings = async () => {
       try {
@@ -32,9 +30,7 @@ const Settings = () => {
     if (token) fetchSettings();
   }, [token]);
 
-  // =========================
-  // Save settings
-  // =========================
+
   const saveSettings = async () => {
     setMessage("");
     setError("");

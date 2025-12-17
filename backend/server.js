@@ -45,17 +45,14 @@ app.use(
 // Handle preflight requests
 app.options("*", cors());
 
-/* ==============================
-   ROUTES
-================================ */
+  //  ROUTES
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 app.use("/api/settings", require("./routes/settingsRoutes"));
 
-/* ==============================
-   HEALTH CHECK (RENDER)
-================================ */
+
+//  HEALTH CHECK (RENDER)
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -63,9 +60,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-/* ==============================
-   404 HANDLER
-================================ */
+  //  404 HANDLER
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -73,9 +68,7 @@ app.use((req, res) => {
   });
 });
 
-/* ==============================
-   GLOBAL ERROR HANDLER
-================================ */
+  //  GLOBAL ERROR HANDLER
 app.use((err, req, res, next) => {
   console.error("❌ Error:", err.message);
 
@@ -85,9 +78,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-/* ==============================
-   START SERVER
-================================ */
+  //  START SERVER
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

@@ -2,10 +2,7 @@ const User = require("../models/User");
 const Organization = require("../models/Organization");
 const generateToken = require("../utils/generateToken");
 
-// ===============================
-// @desc    Register new user
-// @route   POST /api/auth/register
-// ===============================
+
 exports.register = async (req, res) => {
   try {
     const { email, password, orgName } = req.body;
@@ -92,10 +89,7 @@ exports.register = async (req, res) => {
   }
 };
 
-// ===============================
-// @desc    Login user
-// @route   POST /api/auth/login
-// ===============================
+
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;

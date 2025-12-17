@@ -1,7 +1,6 @@
 const Product = require("../models/Product");
 
-// @desc    Create product
-// @route   POST /api/products
+
 exports.createProduct = async (req, res) => {
   try {
     const {

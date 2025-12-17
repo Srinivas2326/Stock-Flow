@@ -27,13 +27,13 @@ const Login = () => {
       // 🔐 API call
       const data = await loginUser({ email, password });
 
-      // ✅ Save JWT token
+      //  Save JWT token
       login(data.token);
 
-      // ✅ SUCCESS TOAST
+      //  SUCCESS TOAST
       toast.success("Login successful");
 
-      // ⏳ IMPORTANT: Delay navigation so toast is visible
+      //  IMPORTANT: Delay navigation so toast is visible
       setTimeout(() => {
         navigate("/dashboard");
       }, 500);

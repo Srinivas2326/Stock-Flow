@@ -1,4 +1,3 @@
-// controllers/settingsController.js
 const Settings = require("../models/Settings");
 
 exports.getSettings = async (req, res) => {

@@ -1,11 +1,7 @@
 const Product = require("../models/Product");
 const Settings = require("../models/Settings");
 
-// ===============================
-// @desc    Get dashboard summary
-// @route   GET /api/dashboard
-// @access  Private
-// ===============================
+
 exports.getDashboard = async (req, res) => {
   try {
     // 1. Fetch all products for the organization
