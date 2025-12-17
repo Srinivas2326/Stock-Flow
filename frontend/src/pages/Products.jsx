@@ -6,15 +6,25 @@ import EditProductModal from "../components/EditProductModal";
 
 const Products = () => {
   const { token } = useContext(AuthContext);
+
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [showAdd, setShowAdd] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
 
   const headers = { Authorization: `Bearer ${token}` };
 
   const loadProducts = async () => {
-    const res = await api.get("/products", { headers });
-    setProducts(res.data);
+    try {
+      setLoading(true);
+      const res = await api.get("/products", { headers });
+      setProducts(res.data);
+    } catch (err) {
+      setError("Failed to load products");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -31,48 +41,55 @@ const Products = () => {
         <button onClick={() => setShowAdd(true)}>+ Add Product</button>
       </div>
 
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>SKU</th>
-            <th>Qty</th>
-            <th>Cost (₹)</th>
-            <th>Price (₹)</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.length === 0 && (
-            <tr>
-              <td colSpan="6" style={{ textAlign: "center" }}>
-                No products found
-              </td>
-            </tr>
-          )}
+      {loading && <p>Loading products...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
-          {products.map((p) => (
-            <tr key={p._id}>
-              <td>{p.name}</td>
-              <td>{p.sku}</td>
-              <td>{p.quantity}</td>
-              <td>₹ {p.costPrice?.toFixed(2)}</td>
-              <td>₹ {p.sellingPrice?.toFixed(2)}</td>
-              <td>
-                <button onClick={() => setEditProduct(p)}>✏️</button>
-                <button
-                  onClick={async () => {
-                    await api.delete(`/products/${p._id}`, { headers });
-                    loadProducts();
-                  }}
-                >
-                  🗑️
-                </button>
-              </td>
+      {!loading && (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>SKU</th>
+              <th>Qty</th>
+              <th>Cost (₹)</th>
+              <th>Price (₹)</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {products.length === 0 && (
+              <tr>
+                <td colSpan="6" style={{ textAlign: "center" }}>
+                  No products found
+                </td>
+              </tr>
+            )}
+
+            {products.map((p) => (
+              <tr key={p._id}>
+                <td>{p.name}</td>
+                <td>{p.sku}</td>
+                <td>{p.quantity}</td>
+                <td>₹ {p.costPrice != null ? p.costPrice.toFixed(2) : "0.00"}</td>
+                <td>
+                  ₹ {p.sellingPrice != null ? p.sellingPrice.toFixed(2) : "0.00"}
+                </td>
+                <td>
+                  <button onClick={() => setEditProduct(p)}>✏️</button>
+                  <button
+                    onClick={async () => {
+                      await api.delete(`/products/${p._id}`, { headers });
+                      loadProducts();
+                    }}
+                  >
+                    🗑️
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {showAdd && (
         <AddProductModal
