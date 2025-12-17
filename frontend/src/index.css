@@ -1,6 +1,4 @@
-/* ================================
-   GLOBAL RESET & VARIABLES
-================================ */
+
 :root {
   --bg: #f5f7fb;
   --bg-card: #ffffff;
@@ -26,17 +24,13 @@ body {
   color: var(--text);
 }
 
-/* ================================
-   LAYOUT
-================================ */
+
 .layout {
   display: flex;
   min-height: 100vh;
 }
 
-/* ================================
-   SIDEBAR
-================================ */
+
 .sidebar {
   width: 240px;
   background: var(--sidebar);
@@ -87,17 +81,13 @@ body {
   background: #b91c1c;
 }
 
-/* ================================
-   CONTENT
-================================ */
+
 .content {
   flex: 1;
   padding: 32px;
 }
 
-/* ================================
-   PAGE HEADER
-================================ */
+
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -113,9 +103,7 @@ body {
   color: var(--text-muted);
 }
 
-/* ================================
-   TABLE
-================================ */
+
 .table {
   width: 100%;
   background: var(--bg-card);
@@ -142,9 +130,7 @@ body {
   background: #f9fafb;
 }
 
-/* ================================
-   BUTTONS
-================================ */
+
 button {
   background: var(--primary);
   color: white;
@@ -173,9 +159,7 @@ button:disabled {
   background: #d1d5db;
 }
 
-/* ================================
-   FORMS (LOGIN / REGISTER)
-================================ */
+
 form {
   max-width: 420px;
   background: white;
@@ -218,9 +202,7 @@ form a:hover {
   text-decoration: underline;
 }
 
-/* ================================
-   MODAL (ADD / EDIT PRODUCT)
-================================ */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -243,9 +225,7 @@ form a:hover {
   margin-bottom: 16px;
 }
 
-/* ================================
-   FORM GROUPS (MODAL)
-================================ */
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -274,9 +254,7 @@ form a:hover {
   gap: 12px;
 }
 
-/* ================================
-   MODAL ACTIONS
-================================ */
+
 .modal-actions {
   display: flex;
   justify-content: flex-end;
@@ -284,18 +262,14 @@ form a:hover {
   margin-top: 18px;
 }
 
-/* ================================
-   ERROR TEXT
-================================ */
+
 .error-text {
   color: #dc2626;
   font-size: 14px;
   margin-bottom: 10px;
 }
 
-/* ================================
-   RESPONSIVE
-================================ */
+
 @media (max-width: 768px) {
   .sidebar {
     display: none;
