@@ -2,11 +2,11 @@ import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { loginUser } from "../services/authService";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const { login } = useContext(AuthContext);
@@ -14,10 +14,9 @@ const Login = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    setError("");
 
     if (!email || !password) {
-      setError("All fields are required");
+      toast.error("Email and password are required");
       return;
     }
 
@@ -26,13 +25,16 @@ const Login = () => {
 
       const data = await loginUser({ email, password });
 
-      // Save JWT token
+      // ✅ Save JWT token
       login(data.token);
+
+      // ✅ SUCCESS TOAST
+      toast.success("Login successful");
 
       // Redirect to dashboard
       navigate("/dashboard");
     } catch (err) {
-      setError(
+      toast.error(
         err.response?.data?.message || "Invalid email or password"
       );
     } finally {
@@ -43,8 +45,6 @@ const Login = () => {
   return (
     <form onSubmit={submitHandler}>
       <h2>Login</h2>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <input
         type="email"
